@@ -3,195 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Fluid Minimal Mouse</title>
+    <title>Liquid Mouse Pro</title>
     <style>
         :root {
-            /* Palette neutra e profonda */
-            --bg-color: #2b2e4a; /* Un blu notte desaturato molto morbido */
-            --glass-surface: rgba(255, 255, 255, 0.03); /* Superficie quasi invisibile */
-            --text-subtle: rgba(255, 255, 255, 0.25); /* Testo appena accennato */
+            /* Palette "Deep Liquid" */
+            --bg-color: #2b2e4a; 
+            --glass-surface: rgba(255, 255, 255, 0.03); 
+            --text-subtle: rgba(255, 255, 255, 0.3); 
             
-            /* Definizione delle ombre morbide per lo stato "fuori" */
+            /* Ombre stato NORMALE (Rilievo) */
             --shadow-out: 
-                12px 12px 24px rgba(0, 0, 0, 0.4), /* Ombra profonda principale */
-                -8px -8px 20px rgba(255, 255, 255, 0.06); /* Riflesso superiore morbido */
+                10px 10px 20px rgba(0, 0, 0, 0.35), 
+                -8px -8px 16px rgba(255, 255, 255, 0.04); 
 
-            /* Definizione delle ombre interne per lo stato "premuto" */
+            /* Ombre stato PREMUTO (Incassato) */
             --shadow-in: 
-                inset 8px 8px 15px rgba(0, 0, 0, 0.3), /* Ombra interna scura */
-                inset -4px -4px 10px rgba(255, 255, 255, 0.05); /* Riflesso interno chiaro */
+                inset 6px 6px 12px rgba(0, 0, 0, 0.25), 
+                inset -4px -4px 10px rgba(255, 255, 255, 0.03); 
         }
 
         body {
             margin: 0;
             height: 100vh;
-            /* Sfondo solido morbido invece del gradiente per maggiore pulizia */
             background: var(--bg-color);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
-            touch-action: none;
+            touch-action: none; /* Disabilita zoom e scroll nativi */
+            user-select: none;
         }
 
-        /* Stile base per tutti gli elementi "fluidi" */
+        /* Stile Base Elementi Fluidi */
         .fluid-panel {
             background: var(--glass-surface);
-            /* Blur molto alto per un effetto vetro spesso e lattiginoso */
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            /* Curve molto ampie */
-            border-radius: 40px;
-            /* Bordo quasi invisibile per definire appena la forma */
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 35px; /* Curve morbide */
             border: 1px solid rgba(255, 255, 255, 0.02);
             box-shadow: var(--shadow-out);
-            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transizione elastica morbida */
             
-            /* Tipografia minimale */
+            /* Transizione rapida per feedback immediato */
+            transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
             display: flex;
             justify-content: center;
             align-items: center;
             color: var(--text-subtle);
+            font-size: 16px;
             font-weight: 500;
-            letter-spacing: 1px;
-            font-size: 14px;
         }
 
-        /* Area Touchpad */
+        /* CLASSE ATTIVA (Applicata via JS per effetto pressione) */
+        .fluid-pressed {
+            box-shadow: var(--shadow-in) !important;
+            transform: scale(0.96); /* Effetto compressione fisica */
+            background: rgba(0,0,0,0.1); /* Leggero oscuramento */
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Layout Touchpad */
         #touchpad {
             width: 88%;
             height: 55%;
             margin-bottom: 25px;
-            /* Togliamo il testo centrale per massimo minimalismo, lo lasciamo solo come feedback */
-            font-size: 0; 
         }
 
-        /* Feedback visivo quando si tocca il touchpad */
-        #touchpad:active {
-            box-shadow: var(--shadow-in);
-            transform: scale(0.995); /* Leggerissima compressione */
-            background: rgba(0,0,0,0.05);
-        }
-
-        /* Contenitore Pulsanti */
+        /* Layout Pulsanti */
         .buttons-container {
             width: 88%;
-            height: 18%;
+            height: 16%;
             display: flex;
             justify-content: space-between;
         }
 
         .mouse-btn {
-            width: 47%;
+            width: 31%; /* Spazio equo per 3 tasti */
             height: 100%;
-            border-radius: 35px; /* Curve leggermente diverse per i pulsanti */
-            font-size: 18px;
+            border-radius: 28px;
             cursor: pointer;
         }
 
-        /* Effetto pressione pulsanti */
-        .mouse-btn:active {
-            box-shadow: var(--shadow-in);
-            transform: scale(0.97); /* Compressione più evidente sui click */
-            color: rgba(255, 255, 255, 0.4); /* Testo leggermente più visibile alla pressione */
-            background: rgba(0,0,0,0.05); /* Oscuramento interno */
+        /* Input nascosto per tastiera */
+        #hidden-input {
+            position: absolute;
+            top: -2000px;
+            opacity: 0;
+            font-size: 16px; 
         }
 
-        /* Status indicator */
+        /* Status */
         #status {
             position: absolute;
-            top: 30px;
+            top: 40px;
             color: var(--text-subtle);
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            opacity: 0.7;
+            opacity: 0.5;
         }
-
     </style>
 </head>
 <body>
 
     <div id="status">Connecting...</div>
 
-    <div id="touchpad" class="fluid-panel">
-        </div>
+    <input type="text" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off">
+
+    <div id="touchpad" class="fluid-panel"></div>
 
     <div class="buttons-container">
         <div id="btn-left" class="fluid-panel mouse-btn">L</div>
+        
+        <div id="btn-keyboard" class="fluid-panel mouse-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 16h10"/>
+            </svg>
+        </div>
+
         <div id="btn-right" class="fluid-panel mouse-btn">R</div>
     </div>
 
-        <script>
+    <script>
         const statusDiv = document.getElementById('status');
-        // *** INSERISCI IL TUO IP QUI ***
+        const hiddenInput = document.getElementById('hidden-input');
+        
+        // *** IMPORTANTE: CAMBIA QUESTO IP CON QUELLO DEL TUO PC ***
         const ws = new WebSocket('ws://192.168.1.XXX:8765'); 
 
-        // Variabili per l'accumulo del movimento
-        let moveX = 0;
-        let moveY = 0;
-        let isMoving = false;
+        // --- 1. LOGICA CONNESSIONE ---
+        ws.onopen = () => { statusDiv.innerText = "LINKED"; statusDiv.style.color = "#88ffcc"; };
+        ws.onclose = () => { statusDiv.innerText = "OFFLINE"; statusDiv.style.color = "#ff8888"; };
+
+        // --- 2. LOGICA MOVIMENTO FLUIDO (Accumulator Pattern) ---
+        let moveX = 0, moveY = 0, isMoving = false;
         
-        // Loop di invio dati (Throttling a 60fps)
-        // Invia i dati solo ogni 16ms invece che ad ogni pixel
+        // Loop a 60fps per inviare i dati accumulati
         setInterval(() => {
-            if (isMoving && ws.readyState === WebSocket.OPEN) {
-                if (moveX !== 0 || moveY !== 0) {
-                    ws.send(JSON.stringify({type: 'move', x: moveX, y: moveY}));
-                    // Resetta l'accumulatore dopo l'invio
-                    moveX = 0;
-                    moveY = 0;
-                }
-                isMoving = false; // Aspetta nuovo input
+            if (isMoving && ws.readyState === WebSocket.OPEN && (moveX !== 0 || moveY !== 0)) {
+                ws.send(JSON.stringify({type: 'move', x: moveX, y: moveY}));
+                moveX = 0; moveY = 0;
+                isMoving = false;
             }
-        }, 16); // 16ms ~ 60fps
+        }, 16); // 16ms = ~60fps
 
-        ws.onopen = () => {
-            statusDiv.innerText = "Ready - Low Latency";
-            statusDiv.style.opacity = "0.4";
-        };
-
-        ws.onclose = () => {
-            statusDiv.innerText = "Disconnected";
-            statusDiv.style.opacity = "1";
-        };
-
-        const touchpad = document.getElementById('touchpad');
+        const pad = document.getElementById('touchpad');
         let lastX = 0, lastY = 0;
 
-        touchpad.addEventListener('touchstart', (e) => {
+        pad.addEventListener('touchstart', (e) => {
             lastX = e.touches[0].clientX;
             lastY = e.touches[0].clientY;
-            // Resetta buffer all'inizio del tocco
-            moveX = 0;
-            moveY = 0;
-        }, {passive: false});
+            moveX = 0; moveY = 0;
+        }, {passive: true}); // passive:true per scroll fluido
 
-        touchpad.addEventListener('touchmove', (e) => {
-            e.preventDefault(); 
-            const currentX = e.touches[0].clientX;
-            const currentY = e.touches[0].clientY;
-
-            // Invece di inviare subito, accumuliamo il valore
-            moveX += (currentX - lastX);
-            moveY += (currentY - lastY);
+        pad.addEventListener('touchmove', (e) => {
+            // Non usiamo preventDefault qui per non bloccare il thread, 
+            // ma lo gestiamo via CSS (touch-action: none)
+            const cx = e.touches[0].clientX;
+            const cy = e.touches[0].clientY;
+            moveX += (cx - lastX);
+            moveY += (cy - lastY);
             isMoving = true;
-
-            lastX = currentX;
-            lastY = currentY;
+            lastX = cx;
+            lastY = cy;
         }, {passive: false});
 
-        // I click rimangono istantanei
-        document.getElementById('btn-left').addEventListener('click', () => {
-            if(ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({type: 'click', btn: 'left'}));
+        // --- 3. LOGICA CLICK E TASTIERA ---
+        const sendClick = (btn) => {
+            if(ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({type: 'click', btn: btn}));
+        };
+
+        // Click Mouse
+        document.getElementById('btn-left').addEventListener('click', () => sendClick('left'));
+        document.getElementById('btn-right').addEventListener('click', () => sendClick('right'));
+
+        // Apertura Tastiera
+        document.getElementById('btn-keyboard').addEventListener('click', () => {
+            hiddenInput.focus();
+            hiddenInput.click();
         });
 
-        document.getElementById('btn-right').addEventListener('click', () => {
-            if(ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({type: 'click', btn: 'right'}));
+        // Invio tasti digitati
+        hiddenInput.addEventListener('input', (e) => {
+            if(ws.readyState !== WebSocket.OPEN) return;
+            
+            if (e.inputType === 'insertText' && e.data) {
+                ws.send(JSON.stringify({type: 'text', char: e.data}));
+            } else if (e.inputType.includes('delete')) {
+                ws.send(JSON.stringify({type: 'key', key: 'backspace'}));
+            }
+            // Pulisci subito per evitare bug di autocomplete
+            setTimeout(() => { hiddenInput.value = ''; }, 0);
         });
+
+        hiddenInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter' && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({type: 'key', key: 'enter'}));
+            }
+        });
+
+        // --- 4. LOGICA VISIVA (Effetto Pressione Unificato) ---
+        function attachPressEffect(id) {
+            const el = document.getElementById(id);
+            const add = () => el.classList.add('fluid-pressed');
+            const remove = () => el.classList.remove('fluid-pressed');
+            
+            el.addEventListener('touchstart', add, {passive: true});
+            el.addEventListener('touchend', remove, {passive: true});
+            el.addEventListener('touchcancel', remove, {passive: true});
+        }
+
+        attachPressEffect('btn-left');
+        attachPressEffect('btn-right');
+        attachPressEffect('btn-keyboard');
+        attachPressEffect('touchpad'); // Anche il pad ora "affonda"
+
     </script>
-
 </body>
 </html>
