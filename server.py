@@ -3,49 +3,51 @@ import websockets
 import json
 import pyautogui
 
-# --- OTTIMIZZAZIONE PRESTAZIONI ---
-# Disabilita la pausa di sicurezza di pyautogui (era 0.1s di default)
-# Questo rende il movimento istantaneo.
-pyautogui.PAUSE = 0 
-
-# Riduce il failsafe per evitare blocchi accidentali agli angoli
-pyautogui.FAILSAFE = False 
-
-# Configurazione sensibilità
-SENSITIVITY = 1.8
+# --- CONFIGURAZIONE PRESTAZIONI ---
+# Disabilita le pause interne per velocità massima
+pyautogui.PAUSE = 0
+pyautogui.FAILSAFE = False
+SENSITIVITY = 1.8 # Modifica questo valore per mouse più/meno veloce
 
 async def handler(websocket):
-    print("Dispositivo connesso! (Modalità Turbo)")
+    print(f"Client connesso.")
     try:
         async for message in websocket:
-            # Caricare il JSON è veloce, ma facciamolo in un blocco try per sicurezza
             try:
                 data = json.loads(message)
                 
+                # 1. Movimento (Ottimizzato)
                 if data['type'] == 'move':
-                    # Usiamo moveRel con _pause=False per forzare la velocità
-                    # E arrotondiamo per evitare calcoli float inutili per i pixel
                     x = data['x'] * SENSITIVITY
                     y = data['y'] * SENSITIVITY
+                    # _pause=False è fondamentale per la fluidità
                     pyautogui.moveRel(x, y, _pause=False)
-                    
+                
+                # 2. Click
                 elif data['type'] == 'click':
-                    if data['btn'] == 'left':
-                        pyautogui.click(button='left', _pause=False)
-                    elif data['btn'] == 'right':
-                        pyautogui.click(button='right', _pause=False)
+                    pyautogui.click(button=data['btn'], _pause=False)
+                
+                # 3. Scrittura Testo
+                elif data['type'] == 'text':
+                    pyautogui.write(data['char'], _pause=False)
+                
+                # 4. Tasti Speciali (Invio, Backspace)
+                elif data['type'] == 'key':
+                    pyautogui.press(data['key'], _pause=False)
 
             except Exception as e:
-                pass # Ignora errori di pacchetto per non fermare il flusso
+                # Ignora errori di parsing per non bloccare il server
+                pass
                     
     except websockets.exceptions.ConnectionClosed:
-        print("Disconnesso.")
+        print("Client disconnesso.")
 
 async def main():
-    # Ping interval None disabilita il ping/pong heartbeat per ridurre latenza
+    # ping_interval=None riduce l'overhead della rete
+    print("--- LIQUID MOUSE SERVER ---")
+    print("In attesa di connessione sulla porta 8765...")
     async with websockets.serve(handler, "0.0.0.0", 8765, ping_interval=None):
-        print("Server Ottimizzato in ascolto...")
-        await asyncio.Future()
+        await asyncio.Future()  # Esegui per sempre
 
 if __name__ == "__main__":
     asyncio.run(main())
