@@ -1,0 +1,248 @@
+📋 LIQUID MOUSE PRO - QUICK REFERENCE
+═════════════════════════════════════════════════════════════════════════════
+
+🚀 AVVIO VELOCE
+─────────────────────────────────────────────────────────────────────────────
+
+[Windows]
+1. Doppio clic su: start.bat
+   Oppure:
+   python server.py
+
+[macOS/Linux]
+1. Terminal:
+   python3 server.py
+
+2. Apri dal telefono:
+   http://[IP-DEL-COMPUTER]:8000
+
+
+⚙️  COMANDI PRINCIPALI
+─────────────────────────────────────────────────────────────────────────────
+
+Installazione:
+  pip install -r requirements.txt
+
+Test diagnostico:
+  python test.py
+
+Verifica sistema (Windows):
+  verify.bat
+
+Avvia server:
+  python server.py
+
+Chiudi server:
+  Ctrl+C nel terminale
+
+
+🔧 CONFIGURAZIONE RAPIDA
+─────────────────────────────────────────────────────────────────────────────
+
+File: server.py
+
+SENSITIVITY = 1.8
+  • 0.5-1.0 = Lento
+  • 1.5-2.0 = Normale (default: 1.8)
+  • 2.5-3.5 = Veloce
+  • 4.0-5.0 = Molto veloce
+
+PORT = 8765              # Porta WebSocket
+HTTP_PORT = 8000         # Porta web
+
+
+🎨 TEMA E COLORI
+─────────────────────────────────────────────────────────────────────────────
+
+File: index.html
+
+Modifica :root per cambiare:
+  --bg-color: #2b2e4a;              # Sfondo (blu scuro default)
+  --glass-surface: rgba(...);       # Trasparenza vetro
+  --text-subtle: rgba(...);         # Colore testo
+
+
+📱 CONNESSIONE SMARTPHONE
+─────────────────────────────────────────────────────────────────────────────
+
+1. Avvia: python server.py
+2. Leggi IP dal terminale (es: 192.168.1.100)
+3. Dal telefono apri: http://192.168.1.100:8000
+4. Inserisci IP se non autoriempito
+5. Premi CONNETTI
+6. Vedi "LINKED" in verde = Connesso! ✅
+
+
+🎮 UTILIZZO
+─────────────────────────────────────────────────────────────────────────────
+
+Touchpad       → Tocca e trascina = Movimento mouse
+Tasto L        → Click sinistro
+Tasto R        → Click destro
+Tasto ⌨️       → Apre tastiera virtuale
+Tasto ↩️       → Invia Invio/Enter
+
+
+🧪 TEST
+─────────────────────────────────────────────────────────────────────────────
+
+python test.py
+
+Verifica:
+  ✅ IP locale
+  ✅ Porta 8765 disponibile
+  ✅ Porta 8000 disponibile
+  ✅ Rete funzionante
+
+
+🆘 PROBLEMI COMUNI
+─────────────────────────────────────────────────────────────────────────────
+
+Problema                    Soluzione
+─────────────────────────── ──────────────────────────────────
+Port 8765 già in uso        netstat -ano | findstr :8765
+                            taskkill /PID [numero] /F
+
+Modulo non trovato          pip install -r requirements.txt
+
+Non riesco a connettermi     • Stessa rete WiFi
+                            • IP corretto
+                            • Firewall disabilitato
+                            • python test.py per diagnostica
+
+Mouse lento/veloce          SENSITIVITY = [numero] in server.py
+
+Server non parte            python test.py (mostra il problema)
+
+
+📂 STRUTTURA FILE
+─────────────────────────────────────────────────────────────────────────────
+
+server.py ........................ Backend WebSocket
+index.html ....................... Frontend web
+start.bat ........................ Avvio automatico (Windows)
+test.py .......................... Diagnostica
+verify.bat ....................... Verifica sistema (Windows)
+requirements.txt ................. Dipendenze
+README.md ........................ Guida completa
+SETUP.md ......................... Installazione
+MANIFEST.md ...................... Architettura
+CONTRIBUTING.md .................. Come contribuire
+CHANGELOG.md ..................... Versioni
+PACKAGE_CONTENTS.md .............. Guida pacchetto
+package.json ..................... Metadati
+.gitignore ....................... File da escludere
+LICENSE .......................... Licenza MIT
+
+
+💾 DIPENDENZE
+─────────────────────────────────────────────────────────────────────────────
+
+websockets==14.1          Server/Client WebSocket
+pyautogui==0.9.53         Automazione mouse/tastiera
+
+Installa con:
+  pip install -r requirements.txt
+
+
+🌐 BROWSER SUPPORTATI
+─────────────────────────────────────────────────────────────────────────────
+
+iOS       Safari 13+            ✅ Consigliato
+Android   Chrome 60+            ✅ Consigliato
+          Firefox 55+           ⚠️  Funziona
+          Edge 79+              ✅ Funziona
+          Opera 47+             ✅ Funziona
+
+
+💻 SISTEMI OPERATIVI
+─────────────────────────────────────────────────────────────────────────────
+
+Windows   10, 11                ✅
+macOS     10.12+                ✅
+Linux     Ubuntu, Debian, ecc   ✅
+
+
+📊 SPECIFICHE TECNICHE
+─────────────────────────────────────────────────────────────────────────────
+
+Protocollo           WebSocket
+Backend              Python 3.7+ + AsyncIO
+Frontend             HTML5 + CSS3 + JavaScript
+Automazione          PyAutoGUI
+Porta WebSocket      8765
+Porta HTTP           8000
+Latenza tipica       50-100ms
+Raggio d'azione      Rete WiFi locale
+Crittografia         NO (uso locale solo)
+
+
+🔐 SICUREZZA
+─────────────────────────────────────────────────────────────────────────────
+
+⚠️  ATTENZIONE: Server gira SENZA crittografia
+
+✅ Sicuro:        Su rete WiFi privata/domestica
+❌ Non sicuro:    Su rete pubblica
+❌ Non sicuro:    Su internet aperto
+
+Per deployment remoto aggiungere:
+  • SSL/TLS
+  • Autenticazione
+  • Firewall
+
+
+📞 SUPPORTO RAPIDO
+─────────────────────────────────────────────────────────────────────────────
+
+1. Esegui: python test.py
+2. Leggi: README.md → Troubleshooting
+3. Controlla: SETUP.md → Troubleshooting Installazione
+
+
+🎯 DOCUMENTAZIONE
+─────────────────────────────────────────────────────────────────────────────
+
+README.md              500+ linee   Guida completa di utilizzo
+SETUP.md               350+ linee   Installazione step-by-step
+MANIFEST.md            250+ linee   Architettura tecnica
+CONTRIBUTING.md        300+ linee   Sviluppo e contributi
+CHANGELOG.md           100+ linee   Versioni e piano futuro
+PACKAGE_CONTENTS.md    250+ linee   Guida del pacchetto
+START_HERE.txt         Questo file  Inizio rapido
+
+
+📝 COMANDI FRECUENTI
+─────────────────────────────────────────────────────────────────────────────
+
+python server.py               Avvia il server
+python test.py                 Esegui diagnostica
+pip install -r requirements.txt Installa dipendenze
+python -m py_compile server.py Verifica sintassi
+
+
+🚀 DEPLOYMENT
+─────────────────────────────────────────────────────────────────────────────
+
+Locale (uso personale):
+  1. python server.py
+  2. Apri da smartphone: http://[IP]:8000
+
+Remoto (non consigliato):
+  1. Usa server clouds (AWS, Heroku, ecc)
+  2. Aggiungi SSL/TLS obbligatorio
+  3. Aggiungi autenticazione
+  4. Proteggi le porte
+
+
+═════════════════════════════════════════════════════════════════════════════
+
+VERSIONE: 1.0.0
+LICENZA: MIT - Libero da usare
+DATA: Gennaio 2026
+
+Per informazioni complete: Leggi README.md
+Per installazione: Leggi SETUP.md
+Per architettura: Leggi MANIFEST.md
+
+═════════════════════════════════════════════════════════════════════════════

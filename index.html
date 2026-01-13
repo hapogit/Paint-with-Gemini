@@ -32,7 +32,6 @@
             justify-content: center;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
-            touch-action: none; /* Disabilita zoom e scroll nativi */
             user-select: none;
         }
 
@@ -66,9 +65,39 @@
 
         /* Layout Touchpad */
         #touchpad {
-            width: 88%;
-            height: 55%;
+            flex: 1;
+            height: auto;
             margin-bottom: 25px;
+        }
+
+        /* Barra Scroll Verticale */
+        #scrollbar {
+            width: 5%;
+            height: auto;
+            margin-bottom: 25px;
+            margin-left: 2%;
+            position: relative;
+            background: var(--glass-surface);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 20px;
+            border: 1px solid rgba(136, 255, 204, 0.1);
+            box-shadow: var(--shadow-out);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(136, 255, 204, 0.4);
+        }
+
+        /* Contenitore Touchpad + Scrollbar */
+        .touchpad-container {
+            display: flex;
+            align-items: stretch;
+            width: 95%;
+            flex: 1;
+            margin-bottom: 25px;
+            gap: 0;
         }
 
         /* Layout Pulsanti */
@@ -104,15 +133,150 @@
             letter-spacing: 2px;
             opacity: 0.5;
         }
+
+        /* Display Testo Digitato */
+        #text-display {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(136, 255, 204, 0.15);
+            border-radius: 16px;
+            padding: 12px 16px;
+            color: rgba(136, 255, 204, 0.9);
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+            min-height: 32px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            word-break: break-all;
+            overflow-y: auto;
+            max-height: 80px;
+            display: none;
+            z-index: 100;
+            box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.02);
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        #text-display.active {
+            display: block !important;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Pannello Configurazione */
+        .config-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .config-panel.hidden {
+            display: none;
+        }
+
+        .config-content {
+            background: var(--glass-surface);
+            backdrop-filter: blur(25px);
+            border-radius: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .config-content h1 {
+            color: rgba(255,255,255,0.7);
+            margin: 0 0 20px 0;
+            font-size: 24px;
+        }
+
+        .config-content p {
+            color: var(--text-subtle);
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .config-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            margin: 20px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .config-input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+
+        .config-btn {
+            background: rgba(136, 255, 204, 0.2);
+            border: 1px solid rgba(136, 255, 204, 0.3);
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: rgba(136, 255, 204, 0.9);
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .config-btn:active {
+            background: rgba(136, 255, 204, 0.4);
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
 
+    <div class="config-panel" id="configPanel">
+        <div class="config-content">
+            <h1>🖱️ Liquid Mouse</h1>
+            <p>Inserisci l'indirizzo IP del computer</p>
+            <input type="text" id="ipInput" class="config-input" placeholder="Es: 192.168.1.100" autocomplete="off">
+            <p style="font-size: 12px; margin-top: 20px;">Leggi il README per trovare l'IP</p>
+            <button class="config-btn" id="connectBtn">CONNETTI</button>
+        </div>
+    </div>
+
     <div id="status">Connecting...</div>
+
+    <div id="text-display"></div>
 
     <input type="text" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off">
 
-    <div id="touchpad" class="fluid-panel"></div>
+    <div class="touchpad-container">
+        <div id="touchpad" class="fluid-panel"></div>
+        <div id="scrollbar" class="fluid-panel"></div>
+    </div>
 
     <div class="buttons-container">
         <div id="btn-left" class="fluid-panel mouse-btn">L</div>
@@ -130,21 +294,75 @@
     <script>
         const statusDiv = document.getElementById('status');
         const hiddenInput = document.getElementById('hidden-input');
+        const configPanel = document.getElementById('configPanel');
+        const ipInput = document.getElementById('ipInput');
+        const connectBtn = document.getElementById('connectBtn');
         
-        // *** IMPORTANTE: CAMBIA QUESTO IP CON QUELLO DEL TUO PC ***
-        const ws = new WebSocket('ws://192.168.1.XXX:8765'); 
+        let ws = null;
 
-        // --- 1. LOGICA CONNESSIONE ---
-        ws.onopen = () => { statusDiv.innerText = "LINKED"; statusDiv.style.color = "#88ffcc"; };
-        ws.onclose = () => { statusDiv.innerText = "OFFLINE"; statusDiv.style.color = "#ff8888"; };
+        // --- 0. CARICAMENTO IP DA STORAGE ---
+        function loadIP() {
+            return localStorage.getItem('liquidMouseIP') || '';
+        }
 
-        // --- 2. LOGICA MOVIMENTO FLUIDO (Accumulator Pattern) ---
+        function saveIP(ip) {
+            localStorage.setItem('liquidMouseIP', ip);
+        }
+
+        // --- 1. CONNESSIONE WEBSOCKET ---
+        function connectServer(ip) {
+            if (!ip.trim()) {
+                alert('Inserisci un indirizzo IP valido');
+                return;
+            }
+
+            const wsUrl = `ws://${ip.trim()}:8765`;
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                statusDiv.innerText = "LINKED";
+                statusDiv.style.color = "#88ffcc";
+                configPanel.classList.add('hidden');
+                saveIP(ip.trim());
+            };
+
+            ws.onclose = () => {
+                statusDiv.innerText = "OFFLINE";
+                statusDiv.style.color = "#ff8888";
+            };
+
+            ws.onerror = () => {
+                statusDiv.innerText = "ERRORE";
+                statusDiv.style.color = "#ff6666";
+            };
+        }
+
+        // --- 2. GESTIONE CONFIGURAZIONE ---
+        connectBtn.addEventListener('click', () => {
+            connectServer(ipInput.value);
+        });
+
+        ipInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                connectServer(ipInput.value);
+            }
+        });
+
+        // Carica IP precedente e mostra pannello se non disponibile
+        const savedIP = loadIP();
+        if (savedIP) {
+            ipInput.value = savedIP;
+            connectServer(savedIP);
+        }
+
+        // --- 3. LOGICA MOVIMENTO FLUIDO (Accumulator Pattern) ---
         let moveX = 0, moveY = 0, isMoving = false;
         
         // Loop a 60fps per inviare i dati accumulati
         setInterval(() => {
-            if (isMoving && ws.readyState === WebSocket.OPEN && (moveX !== 0 || moveY !== 0)) {
+            if (isMoving && ws && ws.readyState === WebSocket.OPEN && (moveX !== 0 || moveY !== 0)) {
                 ws.send(JSON.stringify({type: 'move', x: moveX, y: moveY}));
+                console.log(`Movimento inviato: x=${moveX}, y=${moveY}`);
                 moveX = 0; moveY = 0;
                 isMoving = false;
             }
@@ -152,16 +370,20 @@
 
         const pad = document.getElementById('touchpad');
         let lastX = 0, lastY = 0;
+        let touchActive = false;
 
         pad.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            touchActive = true;
             lastX = e.touches[0].clientX;
             lastY = e.touches[0].clientY;
             moveX = 0; moveY = 0;
-        }, {passive: true}); // passive:true per scroll fluido
+            console.log('Touchpad: touchstart');
+        }, {passive: false});
 
         pad.addEventListener('touchmove', (e) => {
-            // Non usiamo preventDefault qui per non bloccare il thread, 
-            // ma lo gestiamo via CSS (touch-action: none)
+            e.preventDefault();
+            if (!touchActive) return;
             const cx = e.touches[0].clientX;
             const cy = e.touches[0].clientY;
             moveX += (cx - lastX);
@@ -169,43 +391,178 @@
             isMoving = true;
             lastX = cx;
             lastY = cy;
+            console.log(`Touchpad: movimento accumulato x=${moveX}, y=${moveY}`);
         }, {passive: false});
 
-        // --- 3. LOGICA CLICK E TASTIERA ---
+        pad.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            touchActive = false;
+            console.log('Touchpad: touchend');
+        }, {passive: false});
+
+        pad.addEventListener('touchcancel', (e) => {
+            touchActive = false;
+            console.log('Touchpad: touchcancel');
+        }, {passive: false});
+
+        // --- 3.5. LOGICA SCROLL VERTICALE (Barra Laterale) ---
+        let scrollAccumulator = 0;
+        const scrollbar = document.getElementById('scrollbar');
+        let scrollTouchActive = false;
+        let scrollLastY = 0;
+
+        setInterval(() => {
+            if (scrollTouchActive && ws && ws.readyState === WebSocket.OPEN && Math.abs(scrollAccumulator) >= 1) {
+                const scrollAmount = Math.round(scrollAccumulator / 2); // Aumenta sensibilità
+                if (scrollAmount !== 0) {
+                    ws.send(JSON.stringify({type: 'scroll', amount: scrollAmount}));
+                    console.log(`Scroll inviato: ${scrollAmount}`);
+                }
+                scrollAccumulator = 0;
+            }
+        }, 16); // 16ms = ~60fps
+
+        scrollbar.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            scrollTouchActive = true;
+            scrollLastY = e.touches[0].clientY;
+            scrollAccumulator = 0;
+            console.log('Scrollbar: touchstart');
+        }, {passive: false});
+
+        scrollbar.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!scrollTouchActive) return;
+            const cy = e.touches[0].clientY;
+            const delta = cy - scrollLastY;
+            scrollAccumulator += delta * 1.5; // Aumenta sensibilità del 50%
+            scrollLastY = cy;
+            console.log(`Scrollbar: movimento accumulato=${scrollAccumulator}`);
+        }, {passive: false});
+
+        scrollbar.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            scrollTouchActive = false;
+            console.log('Scrollbar: touchend');
+        }, {passive: false});
+
+        scrollbar.addEventListener('touchcancel', (e) => {
+            scrollTouchActive = false;
+            console.log('Scrollbar: touchcancel');
+        }, {passive: false});
+
+        // --- 4. LOGICA CLICK E TASTIERA ---
         const sendClick = (btn) => {
-            if(ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({type: 'click', btn: btn}));
+            if(ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({type: 'click', btn: btn}));
+                console.log(`Click inviato: ${btn}`);
+            }
         };
 
         // Click Mouse
-        document.getElementById('btn-left').addEventListener('click', () => sendClick('left'));
-        document.getElementById('btn-right').addEventListener('click', () => sendClick('right'));
+        document.getElementById('btn-left').addEventListener('click', () => {
+            console.log('Left click');
+            sendClick('left');
+        });
+        document.getElementById('btn-right').addEventListener('click', () => {
+            console.log('Right click');
+            sendClick('right');
+        });
 
         // Apertura Tastiera
         document.getElementById('btn-keyboard').addEventListener('click', () => {
+            console.log('Keyboard button clicked, focusing input');
+            hiddenInput.value = ''; // Svuota prima di focusare
             hiddenInput.focus();
-            hiddenInput.click();
+            if (hiddenInput.setSelectionRange) {
+                hiddenInput.setSelectionRange(0, 0);
+            }
+            console.log('Input focused');
         });
 
-        // Invio tasti digitati
-        hiddenInput.addEventListener('input', (e) => {
-            if(ws.readyState !== WebSocket.OPEN) return;
+        // --- DISPLAY TESTO DIGITATO ---
+        const textDisplay = document.getElementById('text-display');
+        let displayedText = '';
+        let displayTimeout;
+
+        function updateTextDisplay(char) {
+            if (char === '⌫') {
+                displayedText = displayedText.slice(0, -1);
+            } else if (char === '↵') {
+                displayedText += '\n';
+            } else {
+                displayedText += char;
+            }
             
-            if (e.inputType === 'insertText' && e.data) {
-                ws.send(JSON.stringify({type: 'text', char: e.data}));
-            } else if (e.inputType.includes('delete')) {
-                ws.send(JSON.stringify({type: 'key', key: 'backspace'}));
-            }
-            // Pulisci subito per evitare bug di autocomplete
-            setTimeout(() => { hiddenInput.value = ''; }, 0);
-        });
+            console.log(`Aggiornamento display: "${displayedText}"`);
+            textDisplay.textContent = displayedText;
+            textDisplay.classList.add('active');
+            textDisplay.style.display = 'block';
+            
+            clearTimeout(displayTimeout);
+            displayTimeout = setTimeout(() => {
+                textDisplay.classList.remove('active');
+                textDisplay.style.display = 'none';
+                displayedText = '';
+            }, 3000);
+        }
 
-        hiddenInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter' && ws.readyState === WebSocket.OPEN) {
+        // Invio tasti digitati - Compatibile con Safari iOS
+        let previousValue = '';
+        
+        hiddenInput.addEventListener('input', (e) => {
+            if(!ws || ws.readyState !== WebSocket.OPEN) return;
+            
+            const currentValue = hiddenInput.value;
+            console.log(`Input: previous="${previousValue}", current="${currentValue}"`);
+            
+            // Confronta i valori per determinare cosa è stato aggiunto
+            if (currentValue.length > previousValue.length) {
+                // Carattere aggiunto
+                const addedChar = currentValue.substring(previousValue.length);
+                console.log(`Carattere aggiunto: "${addedChar}"`);
+                
+                for (let char of addedChar) {
+                    ws.send(JSON.stringify({type: 'text', char: char}));
+                    updateTextDisplay(char);
+                }
+            } else if (currentValue.length < previousValue.length) {
+                // Backspace
+                const deletedCount = previousValue.length - currentValue.length;
+                console.log(`Backspace x${deletedCount}`);
+                
+                for (let i = 0; i < deletedCount; i++) {
+                    ws.send(JSON.stringify({type: 'key', key: 'backspace'}));
+                    updateTextDisplay('⌫');
+                }
+            }
+            
+            previousValue = currentValue;
+        }, {passive: true});
+
+        hiddenInput.addEventListener('keydown', (e) => {
+            console.log(`Keydown: ${e.key}`);
+            if(!ws || ws.readyState !== WebSocket.OPEN) return;
+            
+            if (e.key === 'Enter') {
+                e.preventDefault();
                 ws.send(JSON.stringify({type: 'key', key: 'enter'}));
+                console.log('Enter inviato');
+                updateTextDisplay('↵');
+                previousValue = '';
+                hiddenInput.value = '';
+            } else if (e.key === 'Backspace') {
+                // Su iOS il Backspace potrebbe non triggerare input event
+                e.preventDefault();
+                previousValue = hiddenInput.value.slice(0, -1);
+                hiddenInput.value = previousValue;
+                ws.send(JSON.stringify({type: 'key', key: 'backspace'}));
+                console.log('Backspace inviato (keydown)');
+                updateTextDisplay('⌫');
             }
-        });
+        }, {passive: false});
 
-        // --- 4. LOGICA VISIVA (Effetto Pressione Unificato) ---
+        // --- 5. LOGICA VISIVA (Effetto Pressione Unificato) ---
         function attachPressEffect(id) {
             const el = document.getElementById(id);
             const add = () => el.classList.add('fluid-pressed');
@@ -219,7 +576,8 @@
         attachPressEffect('btn-left');
         attachPressEffect('btn-right');
         attachPressEffect('btn-keyboard');
-        attachPressEffect('touchpad'); // Anche il pad ora "affonda"
+        attachPressEffect('touchpad');
+        attachPressEffect('scrollbar');
 
     </script>
 </body>
