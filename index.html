@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Liquid Mouse Pro</title>
+    <title>Liquid Mouse</title>
     <style>
         :root {
-            /* Palette "Deep Liquid" */
+            /* Design System: Deep Liquid */
             --bg-color: #2b2e4a; 
             --glass-surface: rgba(255, 255, 255, 0.03); 
             --text-subtle: rgba(255, 255, 255, 0.3); 
             
-            /* Ombre stato NORMALE (Rilievo) */
             --shadow-out: 
                 10px 10px 20px rgba(0, 0, 0, 0.35), 
                 -8px -8px 16px rgba(255, 255, 255, 0.04); 
 
-            /* Ombre stato PREMUTO (Incassato) */
             --shadow-in: 
                 inset 6px 6px 12px rgba(0, 0, 0, 0.25), 
                 inset -4px -4px 10px rgba(255, 255, 255, 0.03); 
@@ -35,18 +33,15 @@
             user-select: none;
         }
 
-        /* Stile Base Elementi Fluidi */
+        /* Componenti Fluidi */
         .fluid-panel {
             background: var(--glass-surface);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border-radius: 35px; /* Curve morbide */
+            border-radius: 35px;
             border: 1px solid rgba(255, 255, 255, 0.02);
             box-shadow: var(--shadow-out);
-            
-            /* Transizione rapida per feedback immediato */
             transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
-            
             display: flex;
             justify-content: center;
             align-items: center;
@@ -55,22 +50,26 @@
             font-weight: 500;
         }
 
-        /* CLASSE ATTIVA (Applicata via JS per effetto pressione) */
         .fluid-pressed {
             box-shadow: var(--shadow-in) !important;
-            transform: scale(0.96); /* Effetto compressione fisica */
-            background: rgba(0,0,0,0.1); /* Leggero oscuramento */
+            transform: scale(0.96);
+            background: rgba(0,0,0,0.1);
             color: rgba(255, 255, 255, 0.6);
         }
 
-        /* Layout Touchpad */
+        .drag-active {
+            background: rgba(255, 204, 0, 0.15) !important;
+            border: 1px solid rgba(255, 204, 0, 0.4) !important;
+            color: #ffcc00 !important;
+            box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.1) !important;
+        }
+
         #touchpad {
             flex: 1;
             height: auto;
             margin-bottom: 25px;
         }
 
-        /* Barra Scroll Verticale */
         #scrollbar {
             width: 5%;
             height: auto;
@@ -90,7 +89,6 @@
             color: rgba(136, 255, 204, 0.4);
         }
 
-        /* Contenitore Touchpad + Scrollbar */
         .touchpad-container {
             display: flex;
             align-items: stretch;
@@ -100,22 +98,26 @@
             gap: 0;
         }
 
-        /* Layout Pulsanti */
         .buttons-container {
-            width: 88%;
+            width: 95%; 
             height: 16%;
             display: flex;
             justify-content: space-between;
+            gap: 8px;
         }
 
         .mouse-btn {
-            width: 31%; /* Spazio equo per 3 tasti */
+            flex: 1;
             height: 100%;
-            border-radius: 28px;
+            border-radius: 24px;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 14px;
         }
 
-        /* Input nascosto per tastiera */
+        /* Input nascosto per cattura tastiera */
         #hidden-input {
             position: absolute;
             top: -2000px;
@@ -123,7 +125,6 @@
             font-size: 16px; 
         }
 
-        /* Status */
         #status {
             position: absolute;
             top: 40px;
@@ -134,7 +135,7 @@
             opacity: 0.5;
         }
 
-        /* Display Testo Digitato */
+        /* Display Feedback Testuale */
         #text-display {
             position: fixed;
             top: 80px;
@@ -152,16 +153,9 @@
             font-weight: 500;
             min-height: 32px;
             line-height: 1.4;
-            word-wrap: break-word;
-            word-break: break-all;
-            overflow-y: auto;
-            max-height: 80px;
             display: none;
             z-index: 100;
-            box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.02);
-            -webkit-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
+            box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1);
         }
 
         #text-display.active {
@@ -170,17 +164,11 @@
         }
 
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Pannello Configurazione */
+        /* Pannello Configurazione Iniziale */
         .config-panel {
             position: fixed;
             top: 0;
@@ -210,31 +198,31 @@
         }
 
         .config-content h1 {
-            color: rgba(255,255,255,0.7);
+            color: #ffffff;
             margin: 0 0 20px 0;
             font-size: 24px;
         }
 
         .config-content p {
-            color: var(--text-subtle);
+            color: #ffffff;
             font-size: 14px;
             margin: 10px 0;
         }
 
         .config-input {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
             border-radius: 12px;
             padding: 12px 16px;
-            color: rgba(255,255,255,0.8);
+            color: #ffffff;
             font-size: 16px;
             margin: 20px 0;
             width: 100%;
             box-sizing: border-box;
         }
-
+        
         .config-input::placeholder {
-            color: rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.5);
         }
 
         .config-btn {
@@ -246,12 +234,6 @@
             font-weight: 600;
             cursor: pointer;
             margin-top: 10px;
-            transition: all 0.2s;
-        }
-
-        .config-btn:active {
-            background: rgba(136, 255, 204, 0.4);
-            transform: scale(0.95);
         }
     </style>
 </head>
@@ -260,17 +242,14 @@
     <div class="config-panel" id="configPanel">
         <div class="config-content">
             <h1>🖱️ Liquid Mouse</h1>
-            <p>Inserisci l'indirizzo IP del computer</p>
+            <p>Inserisci l'indirizzo IP del Server</p>
             <input type="text" id="ipInput" class="config-input" placeholder="Es: 192.168.1.100" autocomplete="off">
-            <p style="font-size: 12px; margin-top: 20px;">Leggi il README per trovare l'IP</p>
             <button class="config-btn" id="connectBtn">CONNETTI</button>
         </div>
     </div>
 
-    <div id="status">Connecting...</div>
-
+    <div id="status">In attesa...</div>
     <div id="text-display"></div>
-
     <input type="text" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off">
 
     <div class="touchpad-container">
@@ -281,6 +260,17 @@
     <div class="buttons-container">
         <div id="btn-left" class="fluid-panel mouse-btn">L</div>
         
+        <div id="btn-drag" class="fluid-panel mouse-btn" style="color: #ffcc00;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
+
+        <div id="btn-select-all" class="fluid-panel mouse-btn" style="font-size: 12px; line-height: 1.2;">
+            <b>SEL</b><br>ALL
+        </div>
+
         <div id="btn-keyboard" class="fluid-panel mouse-btn">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="4" width="20" height="16" rx="2"></rect>
@@ -292,6 +282,7 @@
     </div>
 
     <script>
+        // --- LOGICA CLIENT ---
         const statusDiv = document.getElementById('status');
         const hiddenInput = document.getElementById('hidden-input');
         const configPanel = document.getElementById('configPanel');
@@ -300,73 +291,45 @@
         
         let ws = null;
 
-        // --- 0. CARICAMENTO IP DA STORAGE ---
-        function loadIP() {
-            return localStorage.getItem('liquidMouseIP') || '';
-        }
+        function loadIP() { return localStorage.getItem('liquidMouseIP') || ''; }
+        function saveIP(ip) { localStorage.setItem('liquidMouseIP', ip); }
 
-        function saveIP(ip) {
-            localStorage.setItem('liquidMouseIP', ip);
-        }
-
-        // --- 1. CONNESSIONE WEBSOCKET ---
         function connectServer(ip) {
-            if (!ip.trim()) {
-                alert('Inserisci un indirizzo IP valido');
-                return;
-            }
-
+            if (!ip.trim()) { alert('Inserire un indirizzo IP valido.'); return; }
             const wsUrl = `ws://${ip.trim()}:8765`;
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
-                statusDiv.innerText = "LINKED";
+                statusDiv.innerText = "CONNESSO";
                 statusDiv.style.color = "#88ffcc";
                 configPanel.classList.add('hidden');
                 saveIP(ip.trim());
             };
-
             ws.onclose = () => {
                 statusDiv.innerText = "OFFLINE";
                 statusDiv.style.color = "#ff8888";
             };
-
             ws.onerror = () => {
                 statusDiv.innerText = "ERRORE";
                 statusDiv.style.color = "#ff6666";
             };
         }
 
-        // --- 2. GESTIONE CONFIGURAZIONE ---
-        connectBtn.addEventListener('click', () => {
-            connectServer(ipInput.value);
-        });
+        connectBtn.addEventListener('click', () => connectServer(ipInput.value));
+        ipInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') connectServer(ipInput.value); });
 
-        ipInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                connectServer(ipInput.value);
-            }
-        });
-
-        // Carica IP precedente e mostra pannello se non disponibile
         const savedIP = loadIP();
-        if (savedIP) {
-            ipInput.value = savedIP;
-            connectServer(savedIP);
-        }
+        if (savedIP) { ipInput.value = savedIP; connectServer(savedIP); }
 
-        // --- 3. LOGICA MOVIMENTO FLUIDO (Accumulator Pattern) ---
+        // --- GESTIONE MOVIMENTO CURSORE ---
         let moveX = 0, moveY = 0, isMoving = false;
-        
-        // Loop a 60fps per inviare i dati accumulati
         setInterval(() => {
             if (isMoving && ws && ws.readyState === WebSocket.OPEN && (moveX !== 0 || moveY !== 0)) {
                 ws.send(JSON.stringify({type: 'move', x: moveX, y: moveY}));
-                console.log(`Movimento inviato: x=${moveX}, y=${moveY}`);
                 moveX = 0; moveY = 0;
                 isMoving = false;
             }
-        }, 16); // 16ms = ~60fps
+        }, 16);
 
         const pad = document.getElementById('touchpad');
         let lastX = 0, lastY = 0;
@@ -378,7 +341,6 @@
             lastX = e.touches[0].clientX;
             lastY = e.touches[0].clientY;
             moveX = 0; moveY = 0;
-            console.log('Touchpad: touchstart');
         }, {passive: false});
 
         pad.addEventListener('touchmove', (e) => {
@@ -391,21 +353,12 @@
             isMoving = true;
             lastX = cx;
             lastY = cy;
-            console.log(`Touchpad: movimento accumulato x=${moveX}, y=${moveY}`);
         }, {passive: false});
 
-        pad.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            touchActive = false;
-            console.log('Touchpad: touchend');
-        }, {passive: false});
+        pad.addEventListener('touchend', (e) => { e.preventDefault(); touchActive = false; }, {passive: false});
+        pad.addEventListener('touchcancel', (e) => { touchActive = false; }, {passive: false});
 
-        pad.addEventListener('touchcancel', (e) => {
-            touchActive = false;
-            console.log('Touchpad: touchcancel');
-        }, {passive: false});
-
-        // --- 3.5. LOGICA SCROLL VERTICALE (Barra Laterale) ---
+        // --- GESTIONE SCROLL (Alta Sensibilità) ---
         let scrollAccumulator = 0;
         const scrollbar = document.getElementById('scrollbar');
         let scrollTouchActive = false;
@@ -413,21 +366,19 @@
 
         setInterval(() => {
             if (scrollTouchActive && ws && ws.readyState === WebSocket.OPEN && Math.abs(scrollAccumulator) >= 1) {
-                const scrollAmount = Math.round(scrollAccumulator / 2); // Aumenta sensibilità
+                const scrollAmount = Math.round(scrollAccumulator / 1.5); 
                 if (scrollAmount !== 0) {
                     ws.send(JSON.stringify({type: 'scroll', amount: scrollAmount}));
-                    console.log(`Scroll inviato: ${scrollAmount}`);
                 }
                 scrollAccumulator = 0;
             }
-        }, 16); // 16ms = ~60fps
+        }, 16);
 
         scrollbar.addEventListener('touchstart', (e) => {
             e.preventDefault();
             scrollTouchActive = true;
             scrollLastY = e.touches[0].clientY;
             scrollAccumulator = 0;
-            console.log('Scrollbar: touchstart');
         }, {passive: false});
 
         scrollbar.addEventListener('touchmove', (e) => {
@@ -435,139 +386,123 @@
             if (!scrollTouchActive) return;
             const cy = e.touches[0].clientY;
             const delta = cy - scrollLastY;
-            scrollAccumulator += delta * 1.5; // Aumenta sensibilità del 50%
+            scrollAccumulator += delta * 3.0; // Moltiplicatore sensibilità
             scrollLastY = cy;
-            console.log(`Scrollbar: movimento accumulato=${scrollAccumulator}`);
         }, {passive: false});
 
-        scrollbar.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            scrollTouchActive = false;
-            console.log('Scrollbar: touchend');
-        }, {passive: false});
+        scrollbar.addEventListener('touchend', (e) => { e.preventDefault(); scrollTouchActive = false; }, {passive: false});
+        scrollbar.addEventListener('touchcancel', (e) => { scrollTouchActive = false; }, {passive: false});
 
-        scrollbar.addEventListener('touchcancel', (e) => {
-            scrollTouchActive = false;
-            console.log('Scrollbar: touchcancel');
-        }, {passive: false});
-
-        // --- 4. LOGICA CLICK E TASTIERA ---
+        // --- CONTROLLI E PULSANTI ---
         const sendClick = (btn) => {
             if(ws && ws.readyState === WebSocket.OPEN) {
                 ws.send(JSON.stringify({type: 'click', btn: btn}));
-                console.log(`Click inviato: ${btn}`);
             }
         };
 
-        // Click Mouse
-        document.getElementById('btn-left').addEventListener('click', () => {
-            console.log('Left click');
-            sendClick('left');
-        });
-        document.getElementById('btn-right').addEventListener('click', () => {
-            console.log('Right click');
-            sendClick('right');
-        });
+        document.getElementById('btn-left').addEventListener('click', () => sendClick('left'));
+        document.getElementById('btn-right').addEventListener('click', () => sendClick('right'));
 
-        // Apertura Tastiera
-        document.getElementById('btn-keyboard').addEventListener('click', () => {
-            console.log('Keyboard button clicked, focusing input');
-            hiddenInput.value = ''; // Svuota prima di focusare
-            hiddenInput.focus();
-            if (hiddenInput.setSelectionRange) {
-                hiddenInput.setSelectionRange(0, 0);
+        // Logica Drag & Drop
+        const btnDrag = document.getElementById('btn-drag');
+        let isDragging = false;
+
+        btnDrag.addEventListener('click', () => {
+            isDragging = !isDragging;
+            if (isDragging) {
+                btnDrag.classList.add('drag-active');
+                if(ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({type: 'drag', state: 'down'}));
+                }
+                if (navigator.vibrate) navigator.vibrate(50);
+            } else {
+                btnDrag.classList.remove('drag-active');
+                if(ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({type: 'drag', state: 'up'}));
+                }
             }
-            console.log('Input focused');
         });
 
-        // --- DISPLAY TESTO DIGITATO ---
+        // Logica Select All (Ctrl+A)
+        document.getElementById('btn-select-all').addEventListener('click', () => {
+            if(ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({type: 'hotkey', keys: ['ctrl', 'a']}));
+                if (navigator.vibrate) navigator.vibrate(30);
+                updateTextDisplay("SELEZIONA TUTTO");
+            }
+        });
+
+        document.getElementById('btn-keyboard').addEventListener('click', () => {
+            hiddenInput.value = '';
+            hiddenInput.focus();
+        });
+
+        // --- FEEDBACK VISIVO TESTO ---
         const textDisplay = document.getElementById('text-display');
         let displayedText = '';
         let displayTimeout;
 
         function updateTextDisplay(char) {
-            if (char === '⌫') {
-                displayedText = displayedText.slice(0, -1);
-            } else if (char === '↵') {
-                displayedText += '\n';
-            } else {
-                displayedText += char;
-            }
+            if (char.length > 1) displayedText = char;
+            else if (char === '⌫') displayedText = displayedText.slice(0, -1);
+            else if (char === '↵') displayedText += '\n';
+            else displayedText += char;
             
-            console.log(`Aggiornamento display: "${displayedText}"`);
             textDisplay.textContent = displayedText;
             textDisplay.classList.add('active');
-            textDisplay.style.display = 'block';
             
             clearTimeout(displayTimeout);
             displayTimeout = setTimeout(() => {
                 textDisplay.classList.remove('active');
-                textDisplay.style.display = 'none';
                 displayedText = '';
             }, 3000);
         }
 
-        // Invio tasti digitati - Compatibile con Safari iOS
+        // --- INPUT TASTIERA ---
         let previousValue = '';
-        
         hiddenInput.addEventListener('input', (e) => {
             if(!ws || ws.readyState !== WebSocket.OPEN) return;
-            
             const currentValue = hiddenInput.value;
-            console.log(`Input: previous="${previousValue}", current="${currentValue}"`);
             
-            // Confronta i valori per determinare cosa è stato aggiunto
             if (currentValue.length > previousValue.length) {
-                // Carattere aggiunto
                 const addedChar = currentValue.substring(previousValue.length);
-                console.log(`Carattere aggiunto: "${addedChar}"`);
-                
                 for (let char of addedChar) {
                     ws.send(JSON.stringify({type: 'text', char: char}));
                     updateTextDisplay(char);
                 }
             } else if (currentValue.length < previousValue.length) {
-                // Backspace
                 const deletedCount = previousValue.length - currentValue.length;
-                console.log(`Backspace x${deletedCount}`);
-                
                 for (let i = 0; i < deletedCount; i++) {
                     ws.send(JSON.stringify({type: 'key', key: 'backspace'}));
                     updateTextDisplay('⌫');
                 }
             }
-            
             previousValue = currentValue;
-        }, {passive: true});
+        });
 
         hiddenInput.addEventListener('keydown', (e) => {
-            console.log(`Keydown: ${e.key}`);
             if(!ws || ws.readyState !== WebSocket.OPEN) return;
-            
             if (e.key === 'Enter') {
                 e.preventDefault();
                 ws.send(JSON.stringify({type: 'key', key: 'enter'}));
-                console.log('Enter inviato');
                 updateTextDisplay('↵');
                 previousValue = '';
                 hiddenInput.value = '';
             } else if (e.key === 'Backspace') {
-                // Su iOS il Backspace potrebbe non triggerare input event
-                e.preventDefault();
-                previousValue = hiddenInput.value.slice(0, -1);
-                hiddenInput.value = previousValue;
-                ws.send(JSON.stringify({type: 'key', key: 'backspace'}));
-                console.log('Backspace inviato (keydown)');
-                updateTextDisplay('⌫');
+                setTimeout(() => {
+                    if (hiddenInput.value === previousValue) {
+                        ws.send(JSON.stringify({type: 'key', key: 'backspace'}));
+                        updateTextDisplay('⌫');
+                    }
+                }, 10);
             }
-        }, {passive: false});
+        });
 
-        // --- 5. LOGICA VISIVA (Effetto Pressione Unificato) ---
+        // --- EFFETTI UI ---
         function attachPressEffect(id) {
             const el = document.getElementById(id);
             const add = () => el.classList.add('fluid-pressed');
             const remove = () => el.classList.remove('fluid-pressed');
-            
             el.addEventListener('touchstart', add, {passive: true});
             el.addEventListener('touchend', remove, {passive: true});
             el.addEventListener('touchcancel', remove, {passive: true});
@@ -576,6 +511,8 @@
         attachPressEffect('btn-left');
         attachPressEffect('btn-right');
         attachPressEffect('btn-keyboard');
+        attachPressEffect('btn-drag');
+        attachPressEffect('btn-select-all');
         attachPressEffect('touchpad');
         attachPressEffect('scrollbar');
 

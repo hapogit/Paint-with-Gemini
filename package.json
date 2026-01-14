@@ -1,111 +1,23 @@
 {
-  "name": "Liquid Mouse Pro",
-  "version": "1.0.0",
-  "description": "Controlla il mouse e la tastiera del tuo computer direttamente dal tuo smartphone via WebSocket",
-  "license": "MIT",
-  "author": "Liquid Mouse Pro Team",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tuouser/liquid-mouse-pro"
-  },
-  "keywords": [
-    "mouse",
-    "remote-control",
-    "websocket",
-    "smartphone",
-    "keyboard",
-    "automation"
-  ],
+  "name": "Liquid Mouse",
+  "version": "1.2.0",
+  "description": "Applicazione di controllo remoto mouse e tastiera via WebSocket.",
   "server": {
     "port": 8765,
     "http_port": 8000,
-    "host": "0.0.0.0",
-    "sensitivity": 1.8,
-    "protocol": "websocket",
-    "timeout": 30
+    "sensitivity": 1.8
   },
   "dependencies": {
     "python": ">=3.7",
     "websockets": "14.1",
-    "pyautogui": "0.9.53"
+    "pyautogui": "0.9.53",
+    "pystray": "0.19.5",
+    "Pillow": "10.2.0"
   },
-  "scripts": {
-    "start": "python server.py",
-    "test": "python test.py",
-    "verify": "python verify.bat"
-  },
-  "browser_support": {
-    "chrome": ">=60",
-    "safari": ">=13",
-    "firefox": ">=55",
-    "edge": ">=79"
-  },
-  "platforms": [
-    "Windows 10+",
-    "macOS 10.12+",
-    "Linux (Ubuntu, Debian, Fedora, ecc.)"
-  ],
   "features": [
-    "Controllo remoto del mouse via WebSocket",
-    "Input da tastiera virtuale",
-    "Click sinistro e destro",
-    "Interfaccia moderna con glassmorphism",
-    "Configurazione sensibilità mouse",
-    "Indicatore stato connessione",
-    "Script diagnostico incluso"
-  ],
-  "files": [
-    "server.py",
-    "index.html",
-    "start.bat",
-    "test.py",
-    "verify.bat",
-    "requirements.txt",
-    "README.md",
-    "LICENSE",
-    "CONTRIBUTING.md",
-    "CHANGELOG.md",
-    "SETUP.md",
-    "MANIFEST.md",
-    "package.json"
-  ],
-  "configuration": {
-    "sensitivity": {
-      "min": 0.5,
-      "max": 5.0,
-      "default": 1.8,
-      "description": "Moltiplicatore di sensibilità del mouse"
-    },
-    "port": {
-      "websocket": 8765,
-      "http": 8000,
-      "description": "Porte del server (assicurati che siano disponibili)"
-    }
-  },
-  "troubleshooting": [
-    {
-      "issue": "Port already in use",
-      "solution": "Modifica PORT in server.py o ferma il processo in esecuzione"
-    },
-    {
-      "issue": "Cannot connect from smartphone",
-      "solution": "Verifica di essere sulla stessa rete WiFi e che l'IP sia corretto"
-    },
-    {
-      "issue": "Module not found",
-      "solution": "Esegui: pip install -r requirements.txt"
-    }
-  ],
-  "security_notes": [
-    "Questo server gira SENZA crittografia sulla rete locale",
-    "Non usare su reti pubbliche o non sicure",
-    "Per deployment in produzione, aggiungi SSL/TLS e autenticazione"
-  ],
-  "future_plans": [
-    "Supporto multi-dispositivo",
-    "Gesti avanzati (swipe, pinch)",
-    "Tema selezionabile",
-    "Autenticazione con PIN",
-    "Progressive Web App (PWA)"
+    "Interfaccia Grafica (GUI)",
+    "System Tray",
+    "Drag & Drop",
+    "Select All (Ctrl+A)"
   ]
 }

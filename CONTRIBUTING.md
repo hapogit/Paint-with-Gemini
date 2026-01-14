@@ -131,17 +131,13 @@ Prima di contribuire, assicurati che:
 
 ```bash
 # 1. Il server non ha errori di sintassi
-python -m py_compile server.py
+python -m py_compile server.pyw
 
 # 2. Lo script test passa
 python test.py
 
-# 3. Testa manualmente dal tuo smartphone
-python server.py
-# Apri http://localhost:8000 (o il tuo IP)
-```
-
----
+# 3. Testa manualmente l'avvio
+python server.pyw
 
 ## 📝 Documentazione
 
